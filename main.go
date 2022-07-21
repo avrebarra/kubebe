@@ -10,18 +10,22 @@ import (
 )
 
 var (
-	appname = "kubebe"
+	appname       = "kubebe"
+	prettylogging = true
 )
 
 func main() {
 	// setup structured log
-	logsink1 := zerolog.New(os.Stdout).With().Str("app", appname).Timestamp().Logger()
-	logsink2 := zerolog.New(os.Stdout).With().Str("level", "debug").Str("app", appname).Timestamp().Logger()
+	logsink := log.Logger
+	if prettylogging {
+		logsink = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	}
+	logsink = logsink.With().Str("app", appname).Timestamp().Logger()
+
 	stdlog.SetFlags(0)
-	stdlog.SetOutput(logsink2)
-	log.Logger = logsink1
+	stdlog.SetOutput(logsink.With().Str("level", "debug").Logger())
+	log.Logger = logsink
 
 	// log something
-	stdlog.Println("something happened!")
-	log.Error().Caller().Msg("friggin error here man!")
+	stdlog.Println("initializing server...")
 }
