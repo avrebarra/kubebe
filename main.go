@@ -40,6 +40,15 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HandleIndex()).Methods("GET")
 	r.HandleFunc("/diceroll", HandleDiceRoll()).Methods("POST")
+	r.Use(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+			log.Info().
+				Str("url", r.URL.String()).
+				Str("verb", r.Method).
+				Msg("request received")
+		})
+	})
 
 	// prepare basic server
 	stdlog.Printf("using port http://localhost:%d to start server... ", port)
