@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/avrebarra/minivalidator"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -18,7 +19,7 @@ import (
 
 var (
 	appname       = "kubebe"
-	port          = 2323
+	port          = 8080
 	starttime     = time.Now()
 	prettylogging = true
 )
@@ -38,8 +39,8 @@ func main() {
 	// prepare basic server
 	stdlog.Println("setting up server...")
 	r := mux.NewRouter()
-	r.HandleFunc("/", HandleIndex()).Methods("GET")
-	r.HandleFunc("/diceroll", HandleDiceRoll()).Methods("POST")
+	r.HandleFunc("/", HandleIndex()).Methods("GET", "OPTIONS")
+	r.HandleFunc("/diceroll", HandleDiceRoll()).Methods("POST", "OPTIONS")
 	r.Use(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
@@ -49,6 +50,7 @@ func main() {
 				Msg("request received")
 		})
 	})
+	r.Use(handlers.CORS())
 
 	// start serving, bon appetité
 	stdlog.Printf("using port http://localhost:%d to start server... ", port)
