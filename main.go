@@ -50,7 +50,7 @@ func main() {
 		})
 	})
 
-	// prepare basic server
+	// start serving, bon appetité
 	stdlog.Printf("using port http://localhost:%d to start server... ", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), r)
 	if err != nil {
