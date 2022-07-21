@@ -137,6 +137,4 @@ func respond(writer http.ResponseWriter, status int, data any) {
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 	writer.Write(respout)
-
-	log.Info().Msg("request finished")
 }
